@@ -99,13 +99,13 @@ variable "wi_iam_roles_list" {
 variable "enable_private_endpoint" {
   description = "When true public access to cluster (master) endpoint is disabled.  When false, it can be accessed both publicly and privately."
   type        = bool
-  default     = true
+  default     = false
 }
 
 variable "enable_private_nodes" {
   description = "Nodes only have private IPs and communicate to master via private networking."
   type        = bool
-  default     = true
+  default     = false
 }
 
 variable "master_ipv4_cidr_block" {
@@ -343,13 +343,13 @@ variable "nap_profile" {
 variable "nap_max_cpu" {
   description = "Maximum number of cores in the cluster."
   type        = number
-  default     = 4
+  default     = 8
 }
 
 variable "nap_max_memory" {
   description = "Maximum number of gigabytes of memory in the cluster."
   type        = number
-  default     = 8
+  default     = 12
 }
 
 
@@ -366,7 +366,7 @@ variable "gke_nodepool_name" {
 variable "machine_type" {
   description = "Machine type of nodes in node pool."
   type        = string
-  default     = "e2-small"
+  default     = "e2-medium"
 }
 
 variable "preemptible" {
@@ -378,7 +378,7 @@ variable "preemptible" {
 variable "disk_size_gb" {
   description = "The default disk size the nodes are given.  100G is probably too much for a test cluster, so you can change it if you'd like.  Don't set it too low though as disk I/O is also tied to disk size."
   type        = number
-  default     = 100
+  default     = 40
 }
 
 variable "image_type" {
@@ -390,7 +390,7 @@ variable "image_type" {
 variable "initial_node_count" {
   description = "The initial number of nodes in the pool.  For regional or multi-zonal clusters, this is the number of nodes PER zone."
   type        = number
-  default     = 1
+  default     = 2
 }
 
 variable "min_nodes" {
@@ -402,7 +402,7 @@ variable "min_nodes" {
 variable "max_nodes" {
   description = "Max number of nodes per zone in node pool"
   type        = number
-  default     = 3
+  default     = 5
 }
 
 variable "location_policy" {
