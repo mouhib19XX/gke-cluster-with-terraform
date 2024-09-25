@@ -3,7 +3,7 @@ resource "google_service_account" "gke_sa" {
   display_name = "Custom GKE service account"
 }
 
-# https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/google_project_iam#google_project_iam_member
+
 resource "google_project_iam_member" "gke_sa" {
   project = var.project_id
   count   = length(var.iam_roles_list)
@@ -12,9 +12,8 @@ resource "google_project_iam_member" "gke_sa" {
 }
 
 
-#-------------------------------------
 # Workload Identity
-#-------------------------------------
+
 resource "google_service_account" "wi_gsa" {
   account_id   = "simple-wi-gsa"
   display_name = "Workload Identity Google service account"

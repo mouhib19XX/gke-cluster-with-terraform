@@ -70,7 +70,7 @@ resource "google_compute_firewall" "lb_health_check" {
     protocol = "tcp"
   }
 
-  # https://cloud.google.com/load-balancing/docs/health-check-concepts#ip-ranges
+  
   source_ranges = data.google_netblock_ip_ranges.health-checkers.cidr_blocks_ipv4
 }
 
@@ -87,7 +87,7 @@ resource "google_compute_router" "k8s_vpc" {
   network = google_compute_network.k8s.id
 }
 
-# https://registry.terraform.io/providers/hashicorp/google/latest/docs/resource/compute_router_nat
+
 resource "google_compute_router_nat" "k8s_vpc" {
   count                              = var.enable_private_nodes ? 1 : 0
   name                               = "${var.gke_cluster_name}-vpc-router-nat"

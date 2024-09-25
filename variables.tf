@@ -349,7 +349,7 @@ variable "nap_max_cpu" {
 variable "nap_max_memory" {
   description = "Maximum number of gigabytes of memory in the cluster."
   type        = number
-  default     = 12
+  default     = 20
 }
 
 
@@ -366,7 +366,7 @@ variable "gke_nodepool_name" {
 variable "machine_type" {
   description = "Machine type of nodes in node pool."
   type        = string
-  default     = "e2-medium"
+  default     = "N2D-standard-2"
 }
 
 variable "preemptible" {
@@ -396,13 +396,13 @@ variable "initial_node_count" {
 variable "min_nodes" {
   description = "Min number of nodes per zone in node pool"
   type        = number
-  default     = 1
+  default     = 2
 }
 
 variable "max_nodes" {
   description = "Max number of nodes per zone in node pool"
   type        = number
-  default     = 5
+  default     = 8
 }
 
 variable "location_policy" {

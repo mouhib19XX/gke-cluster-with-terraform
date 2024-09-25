@@ -27,18 +27,12 @@ resource "google_container_cluster" "primary" {
   location            = var.regional ? var.region : var.zone
   deletion_protection = var.deletion_protection
 
-  # Can be single or multi-zone, as
-  # https://www.terraform.io/docs/providers/google/r/container_cluster.html#node_locations
   node_locations = var.node_locations
 
   confidential_nodes {
     enabled = var.confidential_nodes_enabled
   }
 
-  # this node_config block is for the "default pool", which we are not using as per recommendations:
-  # https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/container_cluster#node_config
-  # however, it is required if you're going to use confidential nodes otherwise it will complain about the 
-  # machine family not being set to N2D, even though is in the "google_container_node_pool" resource
   dynamic "node_config" {
     for_each = var.confidential_nodes_enabled ? [1] : []
     content {
@@ -50,9 +44,6 @@ resource "google_container_cluster" "primary" {
     }
   }
 
-  # We can't create a cluster with no node pool defined, but we want to only use
-  # separately managed node pools. So we create the smallest possible default
-  # node pool and immediately delete it.
   remove_default_node_pool = true
   initial_node_count       = var.initial_node_count
 
@@ -228,4 +219,38 @@ resource "google_container_node_pool" "primary" {
     }
 
   }
+}
+resource "google_container_node_pool" "infra_node_pool" {
+  name       = "infra-node-pool"
+  cluster    = google_container_cluster.primary.name  # Reference your GKE cluster
+  location   = var.region  # Your GKE cluster region
+
+  node_config {
+    machine_type = "e2-standard-4"  # Choose machine size based on resource needs
+    oauth_scopes = [
+      "https://www.googleapis.com/auth/cloud-platform",
+    ]
+    
+    taint {
+      key    = "dedicated"
+      value  = "infrastructure"
+      effect = "NoSchedule"  # Prevent non-infrastructure pods from running here
+    }
+
+    labels = {
+      dedicated = "infrastructure"  # Label to help with node affinity
+    }
+  }
+
+  autoscaling {
+    min_node_count = 1  # Minimum number of nodes
+    max_node_count = 3  # Maximum number of nodes (adjust based on load)
+  }
+
+  management {
+    auto_upgrade = true  # Keep infrastructure nodes up to date
+    auto_repair  = true
+  }
+
+  initial_node_count = 1  # Initial count of nodes
 }
